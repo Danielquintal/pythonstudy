@@ -1,0 +1,9 @@
+import barcode
+import uuid
+from barcode.writer import ImageWriter
+from PIL import Image
+
+tracking_id = "pkg-" + str(uuid.uuid4())
+ean = barcode.get('code128', tracking_id, writer=ImageWriter())
+display = ean.render(writer_options={"module_width": 0.2, "module_height": 15, "font_size": 10, "text_distance": 1})
+print ( "Tracking ID: " + tracking_id)
