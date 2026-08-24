@@ -1,0 +1,7 @@
+texto = input("Digite um texto: ")
+
+num_caracteres = len(texto)
+num_palavras = len(texto.split())
+
+print(f"Número de caracteres: {num_caracteres}")
+print(f"Número de palavras: {num_palavras}")
