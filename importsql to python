@@ -1,0 +1,13 @@
+import pyodbc
+dados_conexao = (
+    "host = {SQL SERVER};"
+    "Server = DESKTOP-4LSRF65;"
+    "Database = estudos;"
+)
+
+conexao = dados_conexao
+print("Conexao bem sucedida")
+
+cursor = conexao.cursor()
+comando = "SELECT * FROM estudos"
+cursor.execute(comando)
