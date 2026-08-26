@@ -1,0 +1,104 @@
+import pandas as pd
+
+df = pd.read_csv("consumo_alimentar.csv")
+
+df = pd.read_csv("consumo_alimentar.csv", parse_dates=["data"])  # Lendo o CSV e convertendo a coluna "data" para datetime
+
+df = pd.read_csv("consumo_alimentar.csv", parse_dates=["data"], index_col="id_registro")  # Lendo o CSV, convertendo a coluna "data" para datetime e definindo "id_registro" como índice
+
+print(df.columns)
+# ============================================================
+# BLOCO 1 — Explorando os dados
+# ============================================================
+
+# Exercício 1
+# Mostre as 5 primeiras linhas do dataframe.
+print(df.head())
+
+# Exercício 2
+# Mostre quantas linhas e colunas o dataframe tem.
+print(df.shape)  # (linhas, colunas)
+
+# Exercício 3
+# Mostre os tipos de dados (dtype) de cada coluna.
+print(df.dtypes) 
+
+# Exercício 4
+# Mostre um resumo estatístico (média, mínimo, máximo, etc.) da coluna "calorias".
+print(df["calorias"].describe())
+
+# ============================================================
+# BLOCO 2 — Limpeza de dados
+# ============================================================
+
+# Exercício 5
+# Descubra quantos valores nulos existem na coluna "calorias".
+#print(df["calorias"].isna().sum())
+
+# Exercício 6
+# Crie um novo dataframe "df_limpo" removendo as linhas com valor nulo em "calorias".
+df_limpo = df.dropna(subset=["calorias"])
+
+# Exercício 7
+# Descubra quantas linhas duplicadas existem no dataframe (linhas 100% iguais).
+# Depois, crie "df_sem_duplicatas" removendo essas duplicatas.
+print(df.duplicated().sum())
+df_sem_duplicatas = df.drop_duplicates()
+
+# ============================================================
+# BLOCO 3 — Filtros
+# ============================================================
+
+# Exercício 8
+# Filtre apenas os registros da categoria "Fast Food".
+print(df[df["categoria_alimento"] == "Fast Food"].head())
+
+# Exercício 9
+# Filtre os registros de pessoas com mais de 40 anos.
+print(df[df["idade"] > 40].head())
+
+# Exercício 10
+# Filtre os registros da cidade "São Paulo" E da categoria "Frutas" (duas condições).
+print(df[(df["cidade"] == "São Paulo") & (df["categoria_alimento"] == "Frutas")].head())
+
+# ============================================================
+# BLOCO 4 — Agrupamentos (groupby)
+# ============================================================
+
+# Exercício 11
+# Calcule a média de calorias por categoria_alimento (do maior para o menor).
+print(df.groupby("categoria_alimento")["calorias"].mean().sort_values(ascending=False))
+
+# Exercício 12
+# Calcule quantos registros existem por cidade.
+print(df.groupby("cidade").size())
+
+# Exercício 13
+# Calcule a média de calorias por cidade E por categoria_alimento ao mesmo tempo
+# (dica: groupby aceita uma lista de colunas).
+print(df.groupby(["cidade", "categoria_alimento"])["calorias"].mean())
+
+# ============================================================
+# BLOCO 5 — Criando e transformando colunas
+# ============================================================
+
+# Exercício 14
+# Crie uma nova coluna "faixa_etaria" que classifique cada pessoa em:
+# "Jovem" (idade < 30), "Adulto" (30 <= idade < 50) ou "Sênior" (idade >= 50).
+def classificar_faixa(idade):
+    if idade < 30:
+        return "Jovem"
+    elif idade < 50:
+        return "Adulto"
+    else:
+        return "Sênior"
+
+# Exercício 15
+# Converta a coluna "data" para o tipo datetime e crie uma nova coluna "mes"
+# com o número do mês (1 a 12) de cada registro.
+# Depois, mostre o total de calorias consumidas por mês.
+def converter_data_e_criar_mes(df):
+    df["data"] = pd.to_datetime(df["data"])
+    df["mes"] = df["data"].dt.month
+    calorias_por_mes = df.groupby("mes")["calorias"].sum()
+    return calorias_por_mes
