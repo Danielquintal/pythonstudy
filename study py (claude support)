@@ -177,3 +177,19 @@ df_filtrado = df[df["nome"].str.startswith("A")]
 # Conte quantas pessoas diferentes (nomes únicos) aparecem no dataset.
 num_pessoas_unicas = df["nome"].nunique()
 print(f"Número de pessoas diferentes no dataset: {num_pessoas_unicas}")
+
+# Exercício 29
+# Monte um relatório: para cada cidade, mostre a média de calorias,
+# o total de registros e a categoria de alimento mais consumida (moda).
+# (dica: pode usar groupby + agg, ou fazer em etapas separadas)
+grouped = df.groupby("cidade").agg(
+    media_calorias=("calorias", "mean"),
+    total_registros=("id_registro", "count"),
+    categoria_mais_comum=("categoria_alimento", lambda x: x.mode()[0])
+)
+print(grouped)
+
+# Exercício 30
+# Exporte o dataframe final (com as colunas novas que você criou) para um
+# novo arquivo CSV chamado "consumo_alimentar_tratado.csv".
+df.to_csv("consumo_alimentar_tratado.csv", index=False)
