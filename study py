@@ -102,3 +102,78 @@ def converter_data_e_criar_mes(df):
     df["mes"] = df["data"].dt.month
     calorias_por_mes = df.groupby("mes")["calorias"].sum()
     return calorias_por_mes
+"""
+                                    EXERCÍCIOS DE PANDAS — PARTE 2 (nível intermediário)
+Usa os mesmos dados de antes + um novo arquivo: cidades_info.csv
+(informações de região e população das cidades do dataset original)
+
+Pré-requisito: ter feito (ou pelo menos revisado) exercicios_pandas.py.
+
+Como usar: mesma dinâmica de antes — resolva aqui, confira em
+gabarito_pandas_parte2.py.
+"""
+
+import pandas as pd
+
+df = pd.read_csv("consumo_alimentar.csv")
+cidades_info = pd.read_csv("cidades_info.csv")
+
+# Exercício 16
+# Ordene o dataframe pela coluna "calorias", da maior para a menor,
+# e mostre as 10 linhas com mais calorias.
+df_sorted = df.sort_values(by="calorias", ascending=False)
+print(df_sorted.head(10))
+
+# Exercício 17
+# Descubra qual pessoa (id_pessoa) consumiu mais calorias no total,
+# somando todos os seus registros.
+df_total_calorias = df.groupby("id_pessoa")["calorias"].sum()
+pessoa_mais_calorias = df_total_calorias.idxmax()
+print(f"A pessoa com mais calorias consumidas é: {pessoa_mais_calorias} com {df_total_calorias.max()} calorias.")
+
+
+# Exercício 18
+# Junte (merge) o dataframe "df" com "cidades_info" usando a coluna "cidade"
+# como chave, trazendo região e população para cada registro.
+df_merged = pd.merge(df, cidades_info, on="cidade", how="left")
+
+
+# Exercício 19
+# Depois de fazer o merge, calcule a média de calorias por região.
+df_media_calorias_regiao = df_merged.groupby("regiao")["calorias"].mean()
+print(df_media_calorias_regiao)
+
+# Exercício 20
+# Descubra se existe alguma cidade em "df" que NÃO aparece em "cidades_info"
+# (dica: pesquise sobre o parâmetro "indicator=True" do merge, ou compare
+# os valores únicos das duas colunas de cidade).
+df_merge_check = pd.merge(df[["cidade"]].drop_duplicates(), cidades_info[["cidade"]].drop_duplicates(), on="cidade", how="outer", indicator=True)
+cidades_nao_encontradas = df_merge_check[df_merge_check["_merge"] == "left_only"]["cidade"]
+print("Cidades em df que não estão em cidades_info:", cidades_nao_encontradas.tolist())
+
+# Exercício 21
+# Crie uma pivot_table com cidades nas linhas, categoria_alimento nas colunas,
+# e a média de calorias como valor.
+pivot = df.pivot_table(index="cidade", columns="categoria_alimento", values="calorias", aggfunc="mean")
+print(pivot)    
+
+# Exercício 22
+# Crie uma pivot_table mostrando a CONTAGEM de registros (não a média)
+# por cidade e categoria_alimento (dica: parâmetro aggfunc="count").
+pivot_contagem = df.pivot_table(index="cidade", columns="categoria_alimento", values="calorias", aggfunc="count")
+print(pivot_contagem)
+
+# Exercício 23
+# Crie uma coluna "nome_maiusculo" com o nome da pessoa todo em maiúsculas.
+df["nome_maiusculo"] = df["nome"].str.upper()
+
+
+# Exercício 24
+# Filtre os registros em que o nome da pessoa começa com a letra "A"
+# (dica: métodos de string do pandas começam com .str, ex: .str.startswith).
+df_filtrado = df[df["nome"].str.startswith("A")]
+
+# Exercício 25
+# Conte quantas pessoas diferentes (nomes únicos) aparecem no dataset.
+num_pessoas_unicas = df["nome"].nunique()
+print(f"Número de pessoas diferentes no dataset: {num_pessoas_unicas}")
