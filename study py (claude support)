@@ -1,3 +1,6 @@
+Estudo feito com auxílio da IA (Claude Code): Solicitei para ela fazer diversos exercícios para o meu estudo de python e sql
+
+
 import pandas as pd
 
 df = pd.read_csv("consumo_alimentar.csv")
